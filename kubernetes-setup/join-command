@@ -1,0 +1,1 @@
+kubeadm join 192.168.50.10:6443 --token jzf4jp.imyvtg894csfsnvs     --discovery-token-ca-cert-hash sha256:b31af93d579b3e141d269af87b1603870ea0e5f303f1c91bfb725c72dd0b9d3d 
