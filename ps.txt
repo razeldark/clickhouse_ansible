@@ -1,0 +1,72 @@
+Import-Module ActiveDirectory
+import-module 'D:\Exchange Server\Bin\RemoteExchange.ps1' # Ô¨ ÔçéÔÖ, ¨ãÐ· ó ØçãÆ åí û¨á¨ó ÆÖÔãÖÐí exchange
+Connect-ExchangeServer -auto -ClientApplication:ManagementShell # Ô¨ ÔçéÔÖ, ¨ãÐ· ó ØçãÆ åí û¨á¨ó ÆÖÔãÖÐí exchange
+#$mails = Get-ADGroupMember -Identity "«·Ð· Ð ä·¢·áí" -Recursive #¦Ö¢ ë·åí ØÖ ¬áçØØ¨
+$mails = Get-ADUser -SearchBase DC=corp,DC=cristanval,DC=com -Filter * -ResultSetSize Unlimited | Select Name,SamAccountName,Mail # ëã¨ ØÖÐíóÖë å¨Ð· ë ou
+$m = Format-List -InputObject $mails | Out-String # Øá¨Ö¢á óç¨å ãØ·ãÖÆ ë û·å ¨Òñ½ ë·¦
+foreach ($i in $m) {Write-Host $i}
+foreach ($i in $m) {Disable-Mailbox $i}
+
+foreach ($i in $a) {Write-Host $i}
+import-csv t.txt -Delimiter ":" -Header @("a","b") | select @{Name="b";Expression={[int32]$_.b}} | Sort-Object b
+
+
+
+Get-ADUser -Filter {EmailAddress -like "*"} -Properties EmailAddress | select emailaddress
+
+New-MailboxRestoreRequest -Name $i -SourceDatabase RecEX1_DB0 -SourceStoreMailbox $i -TargetMailbox $i -AllowLegacyDN
+
+
+Get-ADUser -SearchBase "OU=•Ø¨á ¤·ÖÔÔñ½ ¦¨Ø áå Ò¨Ôå •¢ž¨Æåñ ·Ôªá ãåáçÆåçáñ,OU=Users,OU=Corp,DC=corp,DC=cristanval,DC=com" -Filter {manager -eq $OldManager} -ResultSetSize 5000 | Select Name,SamAccountName,Manager
+
+Get-ADGroupMember 'Ó¨Ô¨¦é¨áñ' | foreach {Get-ADUser $_ -Properties *} | Fromat-Table displayname, SamAccountName, mail
+Get-DistributionGroupMember -identity "Ó¨Ô¨¦é¨áñ" | ft name, primarysmtpaddress | clip
+
+
+get-aduser -Filter {manager -eq $O} -Properties Manager | select -ExpandProperty samaccountname | foreach { set-aduser -Identity $_ -manager $NewManager } 
+
+ÔÖëÖã·¢ óçµ¨Ðí ØÖÒ¨Ôàåí 22 ØÖáå
+
+ssh-keygen -f ~/.ssh/id_rsa.pub -m 'PEM' -e > public.pem
+chmod 600 public.pem
+
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+
+Import-Module ActiveDirectory
+import-module 'C:\Program Files\Microsoft\Exchange Server\V15\Bin\RemoteExchange.ps1' # Ô¨ ÔçéÔÖ, ¨ãÐ· ó ØçãÆ åí û¨á¨ó ÆÖÔãÖÐí exchange
+Connect-ExchangeServer -auto -ClientApplication:ManagementShell
+
+
+$email2 = Get-Content -Path 'C:\root\email2.csv'
+foreach ($i in $email2){
+    Write-Host $i
+    $fullpath = "\\fs03\share\pst\"+$i+".pst"
+    New-MailboxExportRequest -Mailbox $i -ContentFilter {(Received -lt "01/01/2018")} -FilePath $fullpath
+
+}
+
+
+
+#'ÖÖ¢ù ¨Ò, ûåÖ ÷åÖ ó  ãÆá·Øå · Øá¨¦Ð ¬ ¨Ò ØáÖ¦ÖÐé·åí
+Write-Host ""¦ Ð¨Ô·¨ Ô¨·ãØÖÐíóç¨Òñµ ª ½ÐÖë ãå áõ¨ 30 ¦Ô¨½ · Öû·ãåÆ  Öå Øçãåñµ Ø ØÖÆ"
+Read-Host ""Ðà ØáÖ¦ÖÐé¨Ô·à Ô éÒ·å¨ Enter"
+#+ ¦ Ò ¦ åç ç¦ Ð¨Ô·à
+$DelDays = (Get-Date).AddDays(-30)
+#Ý ØÆ  Ô óÔ û¨Ô·à
+$targetpath = "C:\Personal\"
+
+$filename = $targetpath+(Get-Date | ForEach-Object { $_ -replace ":", "." }) + '.log'
+
+#"¦ Ðà¨Ò ª ½Ðñ ë Ø ØÆ¨ Ô óÔ û¨Ô·à ãÖ¬Ð ãÔÖ ¦ å¨ ç¦ Ð¨Ô·à
+$files = Get-ChildItem -Path $targetpath -Recurse -Force | Where-Object { !$_.PSIsContainer  -and $_.LastWriteTime -lt $DelDays } #| Remove-Item -Force -Verbose 4>&1 | Set-Content $filename
+Set-Content $filename -value 'LOG'
+foreach ($i in $files){
+    Add-Content $filename -Value (Get-Date | ForEach-Object { $_ -replace ":", "." }), $i
+    Remove-Item $i.FullName -Force 
+}
+#"¦ Ðà¨Ò ëã¨ Øçãåñ¨ Ø ØÆ· ë Ô óÔ û¨ÔÔÖ½ ¦·á¨ÆåÖá··
+Get-ChildItem -Path $targetpath -Recurse -Force | Where-Object { $_.PSIsContainer -and (Get-ChildItem -Path $_.FullName -Recurse -Force | Where-Object { !$_.PSIsContainer }) -eq $null } | Remove-Item -Force -Recurse -Verbose 4>&1 | Add-Content 'C:\Personal\result.log'
+#'ÖÖ¢ù ¨Ò Ö ó ë¨á¨õ¨Ô·· · Øá¨¦Ð ¬ ¨Ò ëñ½å· ·ó ãá¨¦ñ Ö¢á ¢ÖåÆ·
+Write-Host "`n"¦ Ð¨Ô·¨ · Öû·ãåÆ  ó ë¨áõ¨Ôñ"
+#Read-Host ""Ðà ëñµÖ¦  Ô éÒ·å¨ Enter"
