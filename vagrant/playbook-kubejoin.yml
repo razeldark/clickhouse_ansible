@@ -1,8 +1,0 @@
----
-- hosts: worker
-  become: true
-  strategy: free
-  tasks:
-  - name: join k8ts
-    shell: 'kubeadm join 192.168.2.10:6443 --token neljol.sc0wohy8qwkqnkgx --discovery-token-ca-cert-hash sha256:1d2f75837c7e21ddf9c74ad2a740556b1d6efd38d6e86732b494e11d703782d2 --ignore-preflight-errors=all'
-    become: vagrant
