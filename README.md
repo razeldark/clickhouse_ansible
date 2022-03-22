@@ -1,1 +1,1 @@
-Vagrant - Up clickhouse
+Vagrant - Up 4 machines, 1 master, 3 nodes
