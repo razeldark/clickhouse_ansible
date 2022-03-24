@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
       
     config.vm.define "master" do |master|
         master.vm.box = IMAGE_NAME
-        master.vm.network "public_network", ip: "172.20.32.10", bridge: "Hyper-V Virtual Ethernet Adapter"
+        master.vm.network "private_network", ip: "192.168.50.10"#, bridge: "VirtualBox Host-Only Ethernet Adapter"
         master.vm.hostname = "master"
 #        master.vm.provision "ansible" do |ansible|
 #            ansible.playbook = "setup/master-playbook.yml"
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     (1..N).each do |i|
         config.vm.define "node-#{i}" do |node|
             node.vm.box = IMAGE_NAME
-            node.vm.network "public_network", ip: "172.20.32.#{i + 10}", bridge: "Hyper-V Virtual Ethernet Adapter"
+            node.vm.network "private_network", ip: "192.168.50.#{i + 10}"#, bridge: "VirtualBox Host-Only Ethernet Adapter"
             node.vm.hostname = "node-#{i}"
 #            node.vm.provision "ansible" do |ansible|
 #                ansible.playbook = "setup/node-playbook.yml"
