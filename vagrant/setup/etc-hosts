@@ -1,4 +1,4 @@
-172.25.98.10    master  master
-172.25.98.12    node2   node2
-172.25.98.13    node3   node3
-172.25.98.13    node3   node3
+192.168.50.10    master  master
+192.168.50.11    node1   node1
+192.168.50.12    node2   node2
+192.168.50.13    node3   node3

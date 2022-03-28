@@ -1,1 +1,1 @@
-Vagrant - Up 4 machines, 1 master, 3 nodes
+Vagrant - Up 4 vms: 1 master, 3 nodes

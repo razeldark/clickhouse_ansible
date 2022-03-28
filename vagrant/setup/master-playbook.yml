@@ -16,10 +16,10 @@
       - software-properties-common
       - dirmngr
 
-  - name: Add an apt signing key for Clickhouse
-    apt_key:
-      url: https://repo.yandex.ru/clickhouse/CLICKHOUSE-KEY.GPG
-      state: present
+  - name: Add an apt key by id from a keyserver
+    ansible.builtin.apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 8919F6BD2B48D754
 
   - name: Add apt repository for stable version
     apt_repository:
@@ -35,6 +35,7 @@
       packages:
       - clickhouse-server 
       - clickhouse-client
+      - clickhouse-common-static
     notify:
       - clickhouse status
 
@@ -51,6 +52,20 @@
     command: swapoff -a
     when: ansible_swaptotal_mb > 0
 
+
+
   handlers:
     - name: clickhouse status
       service: name=clickhouse-server state=started
+
+
+    - name: Restart ZooKeeper
+      # service:
+      #   name: zookeeper.service
+      #   state: restarted
+      command: /usr/share/zookeeper/bin/zkServer.sh restart
+
+    - name: Restart ClickHouse
+      service:
+        name: clickhouse-server
+        state: restarted
