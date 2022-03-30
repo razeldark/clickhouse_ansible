@@ -1,1 +1,2 @@
-Vagrant - Up 4 vms: 1 master, 3 nodes
+role for installing and setup clickhouse server and zookeeper
+Using vagrant (for local infrastructure) or terraform (for aws)
